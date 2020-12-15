@@ -1,0 +1,61 @@
+name: vlmcsd
+
+on:
+  push:
+  schedule:
+    - cron:  '25 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    continue-on-error: true
+    outputs:
+      VLMCSD_VERSION: ${{ steps.find_version.outputs.VLMCSD_VERSION }}
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        id: find_version
+        name: Find the vlmcsd version
+        run: echo "::set-output name=VLMCSD_VERSION::$(curl -s "https://api.github.com/repos/Wind4/vlmcsd/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')"
+        shell: bash
+
+      - 
+        run: echo ${{ steps.find_version.outputs.VLMCSD_VERSION }}
+
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+
+      - 
+        id: check_repo
+        run: docker pull ghcr.io/needforspeed/vlmcsd:${{ steps.find_version.outputs.VLMCSD_VERSION }}
+        continue-on-error: true
+
+      - 
+        run: echo ${{ steps.check_repo.outcome }}
+
+      - 
+        if: ${{ steps.check_repo.outcome != 'success' }}
+        uses: actions/checkout@v2
+
+      - 
+        if: ${{ steps.check_repo.outcome != 'success' }}
+        name: Publish to GitHub Packages
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile.vlmcsd
+          load: true
+          tags: |
+            ghcr.io/needforspeed/vlmcsd:latest
+            ghcr.io/needforspeed/vlmcsd:${{ steps.find_version.outputs.VLMCSD_VERSION }}
+      -
+         if: ${{ steps.check_repo.outcome != 'success' }}
+         run: |
+           docker push ghcr.io/needforspeed/vlmcsd:latest
+           docker push ghcr.io/needforspeed/vlmcsd:${{ steps.find_version.outputs.VLMCSD_VERSION }}
+
