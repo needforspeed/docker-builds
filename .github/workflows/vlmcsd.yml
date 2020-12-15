@@ -41,6 +41,10 @@ jobs:
 
       - 
         if: ${{ steps.check_repo.outcome != 'success' }}
+        uses: actions/checkout@v2
+
+      - 
+        if: ${{ steps.check_repo.outcome != 'success' }}
         name: Publish to GitHub Packages
         uses: docker/build-push-action@v2
         with:
