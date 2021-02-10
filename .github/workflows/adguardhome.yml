@@ -3,7 +3,7 @@ name: AdGuardHome
 on:
   push:
   schedule:
-    - cron:  '4 5 * * *'
+    - cron:  '4 5 * * 0'
   workflow_dispatch:
 
 jobs:
