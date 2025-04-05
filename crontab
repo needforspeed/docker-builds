@@ -1,1 +1,1 @@
-8 * * * * /home/opc/waste.sh > /home/opc/waste.log 2>&1
+8 * * * * /home/opc/docker-builds/waste.sh > /home/opc/waste.log 2>&1
