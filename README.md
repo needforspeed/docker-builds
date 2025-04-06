@@ -21,3 +21,9 @@ sudo usermod -aG docker opc
 sudo mkdir -p /opt/nginx/data
 sudo chgrp docker /opt/nginx/data
 ```
+
+## Cron
+
+```bash
+crontab crontab
+```
