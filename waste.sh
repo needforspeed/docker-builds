@@ -2,7 +2,7 @@
 
 echo "Build vlmcsd"
 docker rmi vlmcsd
-cd docker-builds && docker build -f Dockerfile.vlmcsd . -t vlmcsd && cd -
+cd /home/opc/docker-builds && docker build -f Dockerfile.vlmcsd . -t vlmcsd && cd -
 docker save -o /opt/nginx/data/vlmcsd.tar vlmcsd
 chmod 644 /opt/nginx/data/vlmcsd.tar
 
