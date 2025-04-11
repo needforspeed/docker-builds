@@ -1,0 +1,1 @@
+8 * * * * /home/ubuntu/docker-builds/waste.sh > /home/ubuntu/waste.log 2>&1
